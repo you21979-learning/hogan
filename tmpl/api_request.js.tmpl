@@ -1,0 +1,43 @@
+'use strict';
+var assert = require('assert');
+
+var valid_string = function(p){
+    return typeof p === 'string'
+}
+var valid_number = function(p){
+    return typeof p === 'number'
+}
+var valid_int8 = function(p){
+    return valid_number(p) && (p >= -128 && p <= 127)
+}
+var valid_uint8 = function(p){
+    return valid_number(p) && (p >= 0 && p <= 255)
+}
+var valid_int16 = function(p){
+    return valid_number(p) && (p >= -32768 && p <= 32767)
+}
+var valid_uint16 = function(p){
+    return valid_number(p) && (p >= 0 && p <= 65535)
+}
+var valid_int32 = function(p){
+    return valid_number(p) && (p >= -2147483648 && p <= 2147483647)
+}
+var valid_uint32 = function(p){
+    return valid_number(p) && (p >= 0 && p <= 4294967295)
+}
+
+var ApiRequest = module.exports = function(){}
+ApiRequest.prototype.query = function(method, params, options){
+}
+{{#defs}}
+ApiRequest.prototype.{{name}} = function({{#params}}{{name}}, {{/params}}options){
+{{#params}}
+    assert(valid_{{type}}({{name}}))
+{{/params}}
+    return this.query('{{method}}', {
+{{#params}}
+        {{name}}: {{name}},
+{{/params}}
+    }, options || {})
+}
+{{/defs}}
